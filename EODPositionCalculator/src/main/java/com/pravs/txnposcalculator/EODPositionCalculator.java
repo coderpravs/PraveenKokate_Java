@@ -9,6 +9,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -41,15 +43,15 @@ public class EODPositionCalculator {
 	public void junitTest(){
 		processEODPosition();
 		
-		File file = new File("D:\\workspace-sts-3.5.0.RELEASE\\txnposcalculator\\src\\main\\resources\\Expected_EndOfDay_Positions.csv");
+		File file = new File(getApplicationPath()+ "\\src\\main\\resources\\Expected_EndOfDay_Positions.csv");
 		assertTrue(file.exists());
 	}
 	
 	
 	public void processEODPosition() {
 		Properties prop = getProperties();
-		String inputFile = prop.getProperty("inputFile");
-		String outputFilePath = prop.getProperty("outputFilePath");
+		String inputFile = getApplicationPath()+prop.getProperty("inputFile");
+		String outputFilePath = getApplicationPath()+prop.getProperty("outputFilePath");
 		BufferedReader br = null;
 		String line = "";
 		String cvsSplitBy = ",";
@@ -81,7 +83,7 @@ public class EODPositionCalculator {
 				i = i + 1;
 			}
 
-			List<Transaction> transactionList = readInputTransactions(prop.getProperty("inputTxnFile"));
+			List<Transaction> transactionList = readInputTransactions(getApplicationPath()+ prop.getProperty("inputTxnFile"));
 			if(transactionList==null){
 				log.error("Oops ! input file not found. Please check following : \n 1. Json file path should be added 'config.properties'. \n 2. Json file should available on provided path as specified in property file & has access rights to read. \n 3. Json file should not be in use by any other process.");
 				return;
@@ -152,9 +154,9 @@ public class EODPositionCalculator {
 	        ObjectMapper mapper = new ObjectMapper();
 			transactionList = Arrays.asList(mapper.readValue(txnJsonArr.toString(),Transaction[].class));
 		} catch (JsonParseException e) {
-			log.error("Oops ! Exception while parsing json provided. Please validate structure of json is correct or not.");
+			log.error("Oops ! Exception while parsing transaction json provided. Please validate structure of json is correct or not.");
 		} catch (JsonMappingException e) {
-			log.error("Oops ! Exception while mapping provided json with system object. Please validate structure of json is correct or not.");
+			log.error("Oops ! Exception while mapping provided transaction json with system object. Please validate structure of json is correct or not.");
 		} catch (IOException e) {
 			log.error("Oops ! Json file not found. Please check following : \n 1. Json file path should be added 'config.properties' is correct or not. \n 2. Json file should available on provided path in property file & has access rights to read. \n 3. File should not be in use by any other process.");
 		} catch (ParseException e) {
@@ -217,6 +219,11 @@ public class EODPositionCalculator {
 			log.error("Oops ! Error while reading property file.");
 		}
 		return prop;
+	}
+	
+	public String getApplicationPath() {
+		Path currentRelativePath = Paths.get("");
+		return currentRelativePath.toAbsolutePath().toString();
 	}
 
 }
