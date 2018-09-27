@@ -1,0 +1,6 @@
+2018-09-27 11:49:49 INFO  EODPositionCalculator:29 - EOD position calculation started.
+2018-09-27 11:49:49 ERROR EODPositionCalculator:121 - Oops ! input file not found. Please check following : 
+ 1. Input file path should be added 'config.properties' is correct or not. 
+ 2. File should available on provided path in property file & has access rights to read. 
+ 3. File should not be in use by any other process.
+2018-09-27 11:49:49 INFO  EODPositionCalculator:31 - EOD position calculation ended.
